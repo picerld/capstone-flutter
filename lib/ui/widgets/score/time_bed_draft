@@ -1,0 +1,151 @@
+  m.Widget _buildTimeInBedCard(SleepProvider provider) {
+    return m.Container(
+      padding: const m.EdgeInsets.all(24),
+      decoration: m.BoxDecoration(
+        gradient: const m.LinearGradient(
+          colors: [
+            m.Color(0xFFFFFFFF),
+            m.Color(0xFFF8F9FA),
+          ],
+          begin: m.Alignment.topLeft,
+          end: m.Alignment.bottomRight,
+        ),
+        borderRadius: m.BorderRadius.circular(24),
+        boxShadow: [
+          m.BoxShadow(
+            color: m.Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const m.Offset(0, 10),
+          ),
+        ],
+      ),
+      child: m.Column(
+        crossAxisAlignment: m.CrossAxisAlignment.start,
+        children: [
+          m.Row(
+            mainAxisAlignment: m.MainAxisAlignment.spaceBetween,
+            children: [
+              m.Row(
+                children: [
+                  m.Container(
+                    padding: const m.EdgeInsets.all(8),
+                    decoration: m.BoxDecoration(
+                      color: const m.Color(0xFF8B5CF6).withOpacity(0.1),
+                      borderRadius: m.BorderRadius.circular(10),
+                    ),
+                    child: const m.Icon(
+                      m.Icons.bed,
+                      color: m.Color(0xFF8B5CF6),
+                      size: 20,
+                    ),
+                  ),
+                  const m.SizedBox(width: 12),
+                  const m.Text(
+                    "Time in Bed",
+                    style: m.TextStyle(
+                      color: m.Colors.black87,
+                      fontSize: 16,
+                      fontWeight: m.FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              m.Container(
+                padding: const m.EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: m.BoxDecoration(
+                  color: const m.Color(0xFF10B981).withOpacity(0.1),
+                  borderRadius: m.BorderRadius.circular(8),
+                ),
+                child: const m.Text(
+                  "Hari ini",
+                  style: m.TextStyle(
+                    color: m.Color(0xFF10B981),
+                    fontSize: 12,
+                    fontWeight: m.FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const m.SizedBox(height: 20),
+          m.Row(
+            mainAxisAlignment: m.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: m.CrossAxisAlignment.end,
+            children: [
+              m.Column(
+                crossAxisAlignment: m.CrossAxisAlignment.start,
+                children: [
+                  m.Text(
+                    'Rata-rata',
+                    style: m.TextStyle(
+                      color: m.Colors.black.withOpacity(0.5),
+                      fontSize: 13,
+                    ),
+                  ),
+                  const m.SizedBox(height: 4),
+                  m.Text(
+                    formatDurationFromMinutes(provider.weeklyAverageDuration),
+                    style: const m.TextStyle(
+                      color: m.Colors.black87,
+                      fontSize: 28,
+                      fontWeight: m.FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              m.Container(
+                padding: const m.EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: m.BoxDecoration(
+                  gradient: const m.LinearGradient(
+                    colors: [
+                      m.Color(0xFF06B6D4),
+                      m.Color(0xFF8B5CF6),
+                    ],
+                  ),
+                  borderRadius: m.BorderRadius.circular(12),
+                ),
+                child: const m.Text(
+                  "20 Malam",
+                  style: m.TextStyle(
+                    color: m.Colors.white,
+                    fontSize: 14,
+                    fontWeight: m.FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const m.SizedBox(height: 20),
+          m.ClipRRect(
+            borderRadius: m.BorderRadius.circular(8),
+            child: m.Container(
+              height: 12,
+              decoration: m.BoxDecoration(
+                color: m.Colors.grey.shade200,
+              ),
+              child: m.FractionallySizedBox(
+                alignment: m.Alignment.centerLeft,
+                widthFactor: 0.75,
+                child: m.Container(
+                  decoration: const m.BoxDecoration(
+                    gradient: m.LinearGradient(
+                      colors: [
+                        m.Color(0xFF06B6D4),
+                        m.Color(0xFF8B5CF6),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }

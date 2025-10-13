@@ -4,11 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static const Color primaryColor = Color(0xFF2E1065);
   static const Color secondaryColor = Color(0xFFFFB347);
-  static const Color deepPrimary = Color(
-    0xFF3B0764,
-  ); // Darker variant for dark mode
+  static const Color deepPrimary = Color(0xFF3B0764);
+  static const Color deepSecondary = Color(0xFFE69536);
 
-  // ✅ Light Theme
   static final ThemeData owlLightTheme = ThemeData(
     colorScheme: ColorSchemes.lightOrange.copyWith(
       primary: () => primaryColor,
@@ -58,10 +56,9 @@ class AppTheme {
     ),
   );
 
-  // ✅ Dark Theme
   static final ThemeData owlDarkTheme = ThemeData(
     colorScheme: ColorSchemes.darkOrange.copyWith(
-      primary: () => deepPrimary,
+      primary: () => primaryColor,
       secondary: () => secondaryColor,
     ),
     radius: 0.5,

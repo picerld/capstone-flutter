@@ -1,8 +1,8 @@
 import 'package:capstone/provider/nav_provider.dart';
 import 'package:capstone/provider/sleep_provider.dart';
 import 'package:capstone/provider/theme_provider.dart';
+import 'package:capstone/routes.dart';
 import 'package:capstone/theme.dart';
-import 'package:capstone/ui/pages/home_screen.dart';
 import 'package:capstone/ui/pages/landing_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -33,19 +33,9 @@ class CapstoneApp extends StatelessWidget {
             darkTheme: AppTheme.owlDarkTheme,
             themeMode: themeProvider.themeMode,
             initialRoute: '/',
-            onGenerateRoute: (settings) {
-              if (settings.name == '/') {
-                return MaterialPageRoute(builder: (_) => const LandingScreen());
-              }
-              // } else if (settings.name == '/detail') {
-              //   final id = settings.arguments as String;
-              //   return MaterialPageRoute(
-              //     builder: (_) => RestaurantDetailPage(id: id),
-              //   );
-              else if (settings.name == "/dashboard") {
-                return MaterialPageRoute(builder: (_) => const HomeScreen());
-              }
-              return null;
+            onGenerateRoute: Routes.generateRoute,
+            onUnknownRoute: (settings) {
+              return MaterialPageRoute(builder: (_) => const LandingScreen());
             },
           );
         },
