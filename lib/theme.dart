@@ -7,6 +7,9 @@ class AppTheme {
   static const Color deepPrimary = Color(0xFF3B0764);
   static const Color deepSecondary = Color(0xFFE69536);
 
+  static const Color darkPurple = Color(0xFF191825);
+  static const Color primaryPurple = Color(0xFF865DFF);
+
   static final ThemeData owlLightTheme = ThemeData(
     colorScheme: ColorSchemes.lightOrange.copyWith(
       primary: () => primaryColor,

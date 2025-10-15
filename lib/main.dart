@@ -1,9 +1,11 @@
 import 'package:capstone/provider/nav_provider.dart';
 import 'package:capstone/provider/sleep_provider.dart';
 import 'package:capstone/provider/theme_provider.dart';
+import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/routes.dart';
 import 'package:capstone/theme.dart';
-import 'package:capstone/ui/pages/landing_screen.dart';
+import 'package:capstone/ui/pages/on_boarding_screen.dart';
+import 'package:capstone/ui/pages/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -21,6 +23,7 @@ class CapstoneApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => SleepProvider()),
         ChangeNotifierProvider(create: (_) => NavProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: Builder(
         builder: (context) {
@@ -32,10 +35,11 @@ class CapstoneApp extends StatelessWidget {
             theme: AppTheme.owlLightTheme,
             darkTheme: AppTheme.owlDarkTheme,
             themeMode: themeProvider.themeMode,
+            home: SplashScreen(),
             initialRoute: '/',
             onGenerateRoute: Routes.generateRoute,
             onUnknownRoute: (settings) {
-              return MaterialPageRoute(builder: (_) => const LandingScreen());
+              return MaterialPageRoute(builder: (_) => const SplashScreen());
             },
           );
         },

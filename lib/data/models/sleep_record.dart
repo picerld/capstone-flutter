@@ -4,6 +4,7 @@ class SleepRecord {
   final String wakeTime; // Format: "HH:mm"
   final int durationMinutes;
   final double quality;
+  final int stressLevel;
   final DateTime date;
 
   SleepRecord({
@@ -12,6 +13,7 @@ class SleepRecord {
     required this.wakeTime,
     required this.durationMinutes,
     required this.quality,
+    required this.stressLevel,
     required this.date,
   });
 
@@ -22,6 +24,7 @@ class SleepRecord {
       'wakeTime': wakeTime,
       'durationMinutes': durationMinutes,
       'quality': quality,
+      'stressLevel': stressLevel,
       'date': date.toIso8601String(),
     };
   }
@@ -33,25 +36,8 @@ class SleepRecord {
       wakeTime: json['wakeTime'],
       durationMinutes: json['durationMinutes'],
       quality: json['quality'],
+      stressLevel: json['stressLevel'] ?? 3,
       date: DateTime.parse(json['date']),
-    );
-  }
-
-  SleepRecord copyWith({
-    String? id,
-    String? sleepTime,
-    String? wakeTime,
-    int? durationMinutes,
-    double? quality,
-    DateTime? date,
-  }) {
-    return SleepRecord(
-      id: id ?? this.id,
-      sleepTime: sleepTime ?? this.sleepTime,
-      wakeTime: wakeTime ?? this.wakeTime,
-      durationMinutes: durationMinutes ?? this.durationMinutes,
-      quality: quality ?? this.quality,
-      date: date ?? this.date,
     );
   }
 }

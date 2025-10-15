@@ -1,13 +1,11 @@
+import 'package:capstone/provider/user_provider.dart';
+import 'package:flutter/material.dart' as m;
+import 'package:provider/provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-class HeaderWithGreeting extends StatefulWidget {
+class HeaderWithGreeting extends m.StatelessWidget {
   const HeaderWithGreeting({super.key});
 
-  @override
-  State<HeaderWithGreeting> createState() => _HeaderWithGreetingState();
-}
-
-class _HeaderWithGreetingState extends State<HeaderWithGreeting> {
   String getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) {
@@ -22,10 +20,13 @@ class _HeaderWithGreetingState extends State<HeaderWithGreeting> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  m.Widget build(m.BuildContext context) {
+    final userName = context.watch<UserProvider>().userName;
+
+
     return Text(
-      '${getGreeting()}, Rafi',
-      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      '${getGreeting()}, ${userName ?? 'Sobat'}',
+      style: m.TextStyle(fontWeight: m.FontWeight.bold, color: m.Colors.white),
     ).h4;
   }
 }

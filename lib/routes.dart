@@ -1,7 +1,8 @@
 import 'package:capstone/ui/pages/analytics_screen.dart';
 import 'package:capstone/ui/pages/home_screen.dart';
-import 'package:capstone/ui/pages/landing_screen.dart';
+import 'package:capstone/ui/pages/on_boarding_screen.dart';
 import 'package:capstone/ui/pages/score_screen.dart';
+import 'package:capstone/ui/pages/splash_screen.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class Routes {
@@ -10,12 +11,14 @@ class Routes {
     final segments = uri.pathSegments;
 
     if (segments.isEmpty) {
-      return _createRoute(const LandingScreen());
+      return _createRoute(const SplashScreen());
     }
 
     switch (segments[0]) {
       case '':
-        return _createRoute(const LandingScreen());
+        return _createRoute(const SplashScreen());
+      case 'on-boarding':
+        return _createRoute(const OnBoardingScreen());
       case 'dashboard':
         return _createRoute(const HomeScreen());
       case 'score':
@@ -23,7 +26,7 @@ class Routes {
       case 'analytics':
         return _createRoute(const AnalyticsScreen());
       default:
-        return _createRoute(const LandingScreen());
+        return _createRoute(const SplashScreen());
     }
   }
 
