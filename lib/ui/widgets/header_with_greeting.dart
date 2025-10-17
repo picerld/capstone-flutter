@@ -23,7 +23,6 @@ class HeaderWithGreeting extends m.StatelessWidget {
   m.Widget build(m.BuildContext context) {
     final userName = context.watch<UserProvider>().userName;
 
-
     return Text(
       '${getGreeting()}, ${userName ?? 'Sobat'}',
       style: m.TextStyle(fontWeight: m.FontWeight.bold, color: m.Colors.white),

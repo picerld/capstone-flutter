@@ -131,23 +131,23 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Future<void> _showRecordDetails(SleepRecord record) async {
     await showDialog(
       context: context,
-      builder: (ctx) => m.AlertDialog(
+      builder: (ctx) => AlertDialog(
         title: const m.Text('Detail Tidur'),
         content: m.Column(
           mainAxisSize: m.MainAxisSize.min,
           crossAxisAlignment: m.CrossAxisAlignment.start,
           children: [
-            m.Text(
+            Text(
               'Tanggal: ${record.date.toLocal().toIso8601String().split("T")[0]}',
             ),
-            m.Text('Jam Tidur: ${record.sleepTime}'),
-            m.Text('Jam Bangun: ${record.wakeTime}'),
-            m.Text('Durasi: ${record.durationMinutes} menit'),
-            m.Text('Quality: ${(record.quality * 100).toStringAsFixed(0)}%'),
+            Text('Jam Tidur: ${record.sleepTime}'),
+            Text('Jam Bangun: ${record.wakeTime}'),
+            Text('Durasi: ${record.durationMinutes} menit'),
+            Text('Quality: ${(record.quality * 100).toStringAsFixed(0)}%'),
           ],
         ),
         actions: [
-          m.TextButton(
+          PrimaryButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: const m.Text('Tutup'),
           ),
@@ -159,13 +159,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Future<void> _showAddRecordDialog(DateTime date) async {
     await showDialog(
       context: context,
-      builder: (ctx) => m.AlertDialog(
-        title: const m.Text('Tidak ada data'),
-        content: m.Text(
+      builder: (ctx) => AlertDialog(
+        title: const Text('Tidak ada data'),
+        content: Text(
           'Tidak ada record untuk ${date.toLocal().toIso8601String().split("T")[0]}.',
         ),
         actions: [
-          m.TextButton(
+          PrimaryButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: const m.Text('Tutup'),
           ),
@@ -303,9 +303,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                         _buildLatestAnalysis(provider),
                         const m.SizedBox(height: 20),
                         _buildRecommendations(provider),
-                        const m.SizedBox(height: 20),
-                        _buildMonthlyTrends(provider),
-                        const m.SizedBox(height: 20),
+                        const m.SizedBox(height: 100),
+                        // _buildMonthlyTrends(provider),
+                        // const m.SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -689,6 +689,21 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   }
 
   m.Widget _buildRecommendations(SleepProvider provider) {
+    final duration = provider.calculateDuration();
+    final hours = duration != null ? duration.inMinutes / 60.0 : 0;
+
+    String recommendationText;
+    if (hours < 7) {
+      recommendationText =
+          'Hari ini kamu tidur kurang dari 7 jam. Coba tidur 90 menit lebih malam ini untuk meningkatkan energimu besok!';
+    } else if (hours >= 7 && hours <= 9) {
+      recommendationText =
+          'Tidurmu cukup hari ini. Pertahankan pola tidur yang sehat!';
+    } else {
+      recommendationText =
+          'Tidurmu lebih dari 9 jam. Pastikan tidak terlalu berlebihan!';
+    }
+
     return m.Container(
       padding: const m.EdgeInsets.all(20),
       decoration: m.BoxDecoration(
@@ -720,7 +735,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               ),
               const m.SizedBox(width: 12),
               const m.Text(
-                'Rekomendasi untuk Besok',
+                'Rekomendasi Besok',
                 style: m.TextStyle(
                   color: m.Colors.white,
                   fontSize: 18,
@@ -731,7 +746,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           ),
           const m.SizedBox(height: 16),
           m.Text(
-            'Hari ini kamu tidur kurang dari 7 jam. Coba tidur 90 mirus lebih malam ini weduk meningkatkan energimu besok!',
+            recommendationText,
             style: m.TextStyle(
               color: m.Colors.white.withOpacity(0.9),
               fontSize: 14,

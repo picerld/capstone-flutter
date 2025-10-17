@@ -1,6 +1,7 @@
 import 'package:capstone/ui/pages/analytics_screen.dart';
 import 'package:capstone/ui/pages/home_screen.dart';
 import 'package:capstone/ui/pages/on_boarding_screen.dart';
+import 'package:capstone/ui/pages/profile_screen.dart';
 import 'package:capstone/ui/pages/score_screen.dart';
 import 'package:capstone/ui/pages/splash_screen.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -25,6 +26,8 @@ class Routes {
         return _createRoute(const ScoreScreen());
       case 'analytics':
         return _createRoute(const AnalyticsScreen());
+      case 'profile':
+        return _createRoute(const ProfileScreen());
       default:
         return _createRoute(const SplashScreen());
     }

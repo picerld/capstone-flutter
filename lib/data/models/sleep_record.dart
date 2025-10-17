@@ -40,4 +40,24 @@ class SleepRecord {
       date: DateTime.parse(json['date']),
     );
   }
+
+  SleepRecord copyWith({
+    String? id,
+    String? sleepTime,
+    String? wakeTime,
+    int? durationMinutes,
+    double? quality,
+    int? stressLevel,
+    DateTime? date,
+  }) {
+    return SleepRecord(
+      id: id ?? this.id,
+      sleepTime: sleepTime ?? this.sleepTime,
+      wakeTime: wakeTime ?? this.wakeTime,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
+      quality: quality ?? this.quality,
+      stressLevel: stressLevel ?? this.stressLevel,
+      date: date ?? this.date,
+    );
+  }
 }

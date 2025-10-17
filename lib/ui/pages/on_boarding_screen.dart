@@ -33,17 +33,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
     );
 
     _slideAnimation = Tween<double>(begin: 50, end: 0).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: Curves.easeOutCubic,
-      ),
+      CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic),
     );
 
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: Curves.easeIn,
-      ),
+      CurvedAnimation(parent: _contentController, curve: Curves.easeIn),
     );
 
     _onboardingPages.addAll([
@@ -52,7 +46,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
           icon: Icons.monitor_heart_outlined,
           title: "Lacak Tidur Harianmu",
           description:
-          "Catat durasi tidurmu setiap hari dengan mudah untuk melihat polanya.",
+              "Catat durasi tidurmu setiap hari dengan mudah untuk melihat polanya.",
         ),
       ),
       buildAnimatedPage(
@@ -60,7 +54,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
           icon: Icons.auto_graph_outlined,
           title: "Dapatkan Prediksi Produktivitas",
           description:
-          "Model cerdas kami akan menganalisis data tidurmu dan memberikan prediksi produktivitas.",
+              "Model cerdas kami akan menganalisis data tidurmu dan memberikan prediksi produktivitas.",
         ),
       ),
       buildAnimatedPage(
@@ -68,7 +62,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
           icon: Icons.lightbulb_outline,
           title: "Rekomendasi Cerdas",
           description:
-          "Terima rekomendasi yang dipersonalisasi untuk meningkatkan kualitas tidur dan kinerjamu.",
+              "Terima rekomendasi yang dipersonalisasi untuk meningkatkan kualitas tidur dan kinerjamu.",
         ),
       ),
     ]);
@@ -89,10 +83,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
       builder: (context, _) {
         return Transform.translate(
           offset: Offset(0, _slideAnimation.value),
-          child: Opacity(
-            opacity: _fadeAnimation.value,
-            child: child,
-          ),
+          child: Opacity(opacity: _fadeAnimation.value, child: child),
         );
       },
     );
@@ -124,7 +115,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                   Row(
                     children: List.generate(
                       _onboardingPages.length,
-                          (index) => buildDot(index),
+                      (index) => buildDot(index),
                     ),
                   ),
                   SizedBox(
@@ -132,17 +123,40 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_currentPage ==
-                            _onboardingPages.length - 1) {
+                        if (_currentPage == _onboardingPages.length - 1) {
+                          // Smooth transition to HomeScreen
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const HomeScreen(),
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
+                              transitionDuration: const Duration(milliseconds: 700),
+                              reverseTransitionDuration: const Duration(milliseconds: 700),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                final curvedAnimation = CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOutCubic,
+                                );
+
+                                final fade = Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation);
+                                final slide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+                                    .animate(curvedAnimation);
+                                final scale = Tween<double>(begin: 0.95, end: 1.0).animate(curvedAnimation);
+
+                                return FadeTransition(
+                                  opacity: fade,
+                                  child: SlideTransition(
+                                    position: slide,
+                                    child: ScaleTransition(
+                                      scale: scale,
+                                      child: child,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         } else {
                           _pageController.nextPage(
-                            duration:
-                            const Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 400),
                             curve: Curves.easeInOut,
                           );
                         }
@@ -155,10 +169,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                         ),
                       ),
                       child: Text(
-                        _currentPage ==
-                            _onboardingPages.length - 1
-                            ? "Mulai"
-                            : "Lanjut",
+                        _currentPage == _onboardingPages.length - 1 ? "Mulai" : "Lanjut",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -208,8 +219,7 @@ class OnboardingPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-      const EdgeInsets.symmetric(horizontal: 40.0),
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -220,11 +230,7 @@ class OnboardingPageContent extends StatelessWidget {
               shape: BoxShape.circle,
               color: primaryPurple.withOpacity(0.15),
             ),
-            child: Icon(
-              icon,
-              size: 80,
-              color: primaryPurple,
-            ),
+            child: Icon(icon, size: 80, color: primaryPurple),
           ),
           const SizedBox(height: 48),
           Text(

@@ -31,6 +31,10 @@ class _ScoreScreenState extends State<ScoreScreen>
       duration: const Duration(milliseconds: 2000),
     );
 
+    _progressAnimation = Tween<double>(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
+    );
+
     _contentController = m.AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -185,7 +189,7 @@ class _ScoreScreenState extends State<ScoreScreen>
                         const m.SizedBox(height: 40),
 
                         _buildStatsCards(provider),
-                        const m.SizedBox(height: 24),
+                        const m.SizedBox(height: 100),
                       ],
                     ),
                   ),

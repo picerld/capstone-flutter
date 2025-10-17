@@ -27,4 +27,22 @@ class UserProvider extends ChangeNotifier {
     _userName = name;
     notifyListeners();
   }
+
+  Future<void> clearUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clears all data including userName and sleep data
+    _userName = null;
+    notifyListeners();
+  }
+
+  // Alternative: Clear only specific keys
+  Future<void> clearUserDataSelective() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userName');
+    // Add other keys you want to remove, for example:
+    // await prefs.remove('sleepData');
+    // await prefs.remove('otherData');
+    _userName = null;
+    notifyListeners();
+  }
 }

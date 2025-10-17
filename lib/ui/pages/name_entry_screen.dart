@@ -19,8 +19,23 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
     if (_formKey.currentState!.validate()) {
       final userName = _nameController.text;
       context.read<UserProvider>().saveUserName(userName).then((_) {
+        if (!mounted) return;
+
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const OnBoardingScreen()),
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+            const OnBoardingScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const curve = Curves.easeInOut;
+              final tween = Tween(begin: 0.0, end: 1.0)
+                  .chain(CurveTween(curve: curve));
+              return FadeTransition(
+                opacity: animation.drive(tween),
+                child: child,
+              );
+            },
+          ),
         );
       });
     }
@@ -29,6 +44,7 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF191825),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -44,6 +60,7 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -58,8 +75,13 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _nameController,
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                     hintText: 'Masukkan nama...',
+                    hintStyle: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontWeight: FontWeight.bold),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.1),
                     border: OutlineInputBorder(
@@ -77,7 +99,19 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _submitName,
-                  child: const Text('Lanjutkan'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Lanjutkan',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ],
             ),

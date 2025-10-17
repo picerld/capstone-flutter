@@ -20,8 +20,13 @@ class NavProvider extends ChangeNotifier {
         Navigator.pushReplacementNamed(context, '/analytics');
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, '/users');
+        Navigator.pushReplacementNamed(context, '/profile');
         break;
     }
+  }
+
+  void resetIndex(BuildContext context) {
+    _index = 0;
+    notifyListeners();
   }
 }

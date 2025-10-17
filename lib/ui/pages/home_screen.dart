@@ -9,7 +9,6 @@ import 'package:capstone/utils/time_utils.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,7 +17,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends m.State<HomeScreen>
+class _HomeScreenState extends State<HomeScreen>
     with m.TickerProviderStateMixin {
   late m.AnimationController _progressController;
   late m.Animation<double> _progressAnimation;
@@ -30,9 +29,14 @@ class _HomeScreenState extends m.State<HomeScreen>
   @override
   void initState() {
     super.initState();
+
     _progressController = m.AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
+    );
+
+    _progressAnimation = Tween<double>(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
     );
 
     _contentController = m.AnimationController(
@@ -51,41 +55,24 @@ class _HomeScreenState extends m.State<HomeScreen>
       m.CurvedAnimation(parent: _contentController, curve: m.Curves.easeIn),
     );
 
-    _progressAnimation = m.Tween<double>(begin: 0, end: 0).animate(
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final provider = context.read<SleepProvider>();
+      await provider.loadData();
+      _updateProgress(provider);
+      _contentController.forward();
+    });
+  }
+
+  void _updateProgress(SleepProvider provider) {
+    final quality = provider.calculateQuality(); // 0.0 - 1.0
+    _progressAnimation = m.Tween<double>(begin: 0, end: quality).animate(
       m.CurvedAnimation(parent: _progressController, curve: m.Curves.easeInOut),
     );
-
-    m.WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SleepProvider>().loadData().then((_) {
-        if (mounted) {
-          _updateProgress();
-          _contentController.forward();
-        }
-      });
-    });
-  }
-
-  void _updateProgress() {
-    final provider = context.read<SleepProvider>();
-    final quality = provider.calculateQuality();
-    setState(() {
-      _progressAnimation = m.Tween<double>(begin: 0, end: quality).animate(
-        m.CurvedAnimation(
-            parent: _progressController, curve: m.Curves.easeInOut),
-      );
-      _progressController.forward(from: 0);
-    });
-  }
-
-  @override
-  void dispose() {
-    _progressController.dispose();
-    super.dispose();
+    _progressController.forward(from: 0);
   }
 
   Future<void> pickTime({required bool isSleepTime}) async {
     final provider = context.read<SleepProvider>();
-
     final m.TimeOfDay? picked = await m.showTimePicker(
       context: context,
       initialTime: m.TimeOfDay.now(),
@@ -110,28 +97,26 @@ class _HomeScreenState extends m.State<HomeScreen>
       } else {
         provider.setJamBangun(picked);
       }
-      if (mounted) {
-        await provider.saveSleepRecord();
-        _updateProgress();
+
+      if (provider.jamTidur != null && provider.jamBangun != null && mounted) {
+        m.ScaffoldMessenger.of(context).showSnackBar(
+          const m.SnackBar(
+            content: m.Text('Sleep record saved successfully!'),
+            backgroundColor: m.Color(0xFF8B5CF6),
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
+
+      _updateProgress(provider);
     }
   }
 
-  m.Widget _buildLegend(String label, m.Color color) {
-    return m.Row(
-      children: [
-        m.Container(
-          width: 8,
-          height: 8,
-          decoration: m.BoxDecoration(color: color, shape: m.BoxShape.circle),
-        ),
-        const m.SizedBox(width: 8),
-        m.Text(
-          label,
-          style: const m.TextStyle(color: m.Colors.white70, fontSize: 12),
-        ),
-      ],
-    );
+  @override
+  void dispose() {
+    _progressController.dispose();
+    _contentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -143,17 +128,7 @@ class _HomeScreenState extends m.State<HomeScreen>
         if (provider.isLoading) {
           return m.Scaffold(
             body: m.Container(
-              decoration: const m.BoxDecoration(
-                gradient: m.LinearGradient(
-                  begin: m.Alignment.topCenter,
-                  end: m.Alignment.bottomCenter,
-                  colors: [
-                    m.Color(0xFF0A0118),
-                    m.Color(0xFF1A0B2E),
-                    m.Color(0xFF0A0118),
-                  ],
-                ),
-              ),
+              decoration: const m.BoxDecoration(color: Color(0xFF3B0764)),
               child: m.Center(
                 child: m.Column(
                   mainAxisSize: m.MainAxisSize.min,
@@ -220,24 +195,19 @@ class _HomeScreenState extends m.State<HomeScreen>
                   padding: const m.EdgeInsets.all(24),
                   child: m.AnimatedBuilder(
                     animation: _contentController,
-                    builder: (context, child) {
-                      return m.Transform.translate(
-                        offset: m.Offset(0, _slideAnimation.value),
-                        child: m.Opacity(
-                          opacity: _fadeAnimation.value,
-                          child: child,
-                        ),
-                      );
-                    },
+                    builder: (context, child) => m.Transform.translate(
+                      offset: m.Offset(0, _slideAnimation.value),
+                      child: m.Opacity(
+                        opacity: _fadeAnimation.value,
+                        child: child,
+                      ),
+                    ),
                     child: m.Column(
                       crossAxisAlignment: m.CrossAxisAlignment.start,
                       children: [
-                        const m.SizedBox(height: 32),
-
-                        HeaderWithGreeting(),
-
-                        const SizedBox(height: 32),
-
+                        const m.SizedBox(height: 40),
+                        const HeaderWithGreeting(),
+                        const m.SizedBox(height: 40),
                         m.Row(
                           children: [
                             m.Expanded(
@@ -269,17 +239,19 @@ class _HomeScreenState extends m.State<HomeScreen>
                             ),
                           ],
                         ),
-
                         const m.SizedBox(height: 35),
-                        // ## KODE FITUR STRES ADA DI SINI ##
+
+                        // Stress Card directly updates provider
                         StressInputCard(
                           stressLevel: provider.stressLevel,
-                          onChanged: (value) {
-                            provider.setStressLevel(value);
-                            _updateProgress();
+                          onChanged: (level) {
+                            provider.setStressLevel(level);
+                            _updateProgress(provider);
                           },
                         ),
-                        const m.SizedBox(height: 50),
+
+                        const m.SizedBox(height: 40),
+
                         m.Center(
                           child: m.Column(
                             children: [
@@ -288,34 +260,36 @@ class _HomeScreenState extends m.State<HomeScreen>
                                 height: 200,
                                 child: m.AnimatedBuilder(
                                   animation: _progressAnimation,
-                                  builder: (context, child) {
-                                    return m.CustomPaint(
-                                      painter: CircularProgressPainter(
-                                        progress: _progressAnimation.value,
-                                        strokeWidth: 12,
-                                      ),
-                                      child: m.Center(
-                                        child: m.Column(
-                                          mainAxisAlignment:
-                                          m.MainAxisAlignment.center,
-                                          children: [
-                                            const m.Text("Quality",
-                                                style: m.TextStyle(
-                                                    color: m.Colors.white70,
-                                                    fontSize: 14)),
-                                            const m.SizedBox(height: 8),
-                                            m.Text(
-                                              "${(_progressAnimation.value * 100).toInt()}%",
-                                              style: const m.TextStyle(
-                                                  color: m.Colors.white,
-                                                  fontSize: 48,
-                                                  fontWeight: m.FontWeight.bold),
+                                  builder: (context, child) => m.CustomPaint(
+                                    painter: CircularProgressPainter(
+                                      progress: _progressAnimation.value,
+                                      strokeWidth: 12,
+                                    ),
+                                    child: m.Center(
+                                      child: m.Column(
+                                        mainAxisAlignment:
+                                            m.MainAxisAlignment.center,
+                                        children: [
+                                          const m.Text(
+                                            "Skor Tidur",
+                                            style: m.TextStyle(
+                                              color: m.Colors.white70,
+                                              fontSize: 14,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          const m.SizedBox(height: 8),
+                                          m.Text(
+                                            "${(_progressAnimation.value * 100).toInt()}%",
+                                            style: const m.TextStyle(
+                                              color: m.Colors.white,
+                                              fontSize: 48,
+                                              fontWeight: m.FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 ),
                               ),
                               const m.SizedBox(height: 24),
@@ -323,99 +297,109 @@ class _HomeScreenState extends m.State<HomeScreen>
                                 mainAxisAlignment: m.MainAxisAlignment.center,
                                 children: [
                                   _buildLegend(
-                                      "Deep Sleep", const m.Color(0xFF8B5CF6)),
+                                    "Deep Sleep",
+                                    const m.Color(0xFF8B5CF6),
+                                  ),
                                   const m.SizedBox(width: 32),
                                   _buildLegend(
-                                      "Light Sleep", const m.Color(0xFF06B6D4)),
+                                    "Light Sleep",
+                                    const m.Color(0xFF06B6D4),
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
 
-                        const m.SizedBox(height: 45),
+                              const m.SizedBox(height: 45),
 
-                        m.Container(
-                          padding: const m.EdgeInsets.all(20),
-                          decoration: m.BoxDecoration(
-                            color: m.Colors.white.withValues(alpha: 0.05),
-                            borderRadius: m.BorderRadius.circular(20),
-                            border: m.Border.all(
-                              color: m.Colors.white.withValues(alpha: 0.1),
-                            ),
-                          ),
-                          child: m.Row(
-                            children: [
                               m.Container(
-                                padding: const m.EdgeInsets.all(12),
+                                padding: const m.EdgeInsets.all(20),
                                 decoration: m.BoxDecoration(
-                                  gradient: const m.LinearGradient(
-                                    colors: [
-                                      m.Color(0xFF8B5CF6),
-                                      m.Color(0xFF6366F1),
-                                    ],
+                                  color: m.Colors.white.withValues(alpha: 0.05),
+                                  borderRadius: m.BorderRadius.circular(20),
+                                  border: m.Border.all(
+                                    color: m.Colors.white.withValues(
+                                      alpha: 0.1,
+                                    ),
                                   ),
-                                  borderRadius: m.BorderRadius.circular(12),
                                 ),
-                                child: const m.Icon(
-                                  m.Icons.alarm,
-                                  color: m.Colors.white,
-                                  size: 28,
-                                ),
-                              ),
-                              const m.SizedBox(width: 16),
-                              m.Expanded(
-                                child: m.Column(
-                                  crossAxisAlignment: m.CrossAxisAlignment.start,
+                                child: m.Row(
                                   children: [
-                                    const m.Text(
-                                      "Asleep",
-                                      style: m.TextStyle(
-                                        color: m.Colors.white70,
-                                        fontSize: 13,
+                                    m.Container(
+                                      padding: const m.EdgeInsets.all(12),
+                                      decoration: m.BoxDecoration(
+                                        gradient: const m.LinearGradient(
+                                          colors: [
+                                            m.Color(0xFF8B5CF6),
+                                            m.Color(0xFF6366F1),
+                                          ],
+                                        ),
+                                        borderRadius: m.BorderRadius.circular(
+                                          12,
+                                        ),
+                                      ),
+                                      child: const m.Icon(
+                                        m.Icons.alarm,
+                                        color: m.Colors.white,
+                                        size: 28,
                                       ),
                                     ),
-                                    const m.SizedBox(height: 4),
-                                    m.Text(
-                                      formatTime(provider.jamTidur),
-                                      style: const m.TextStyle(
-                                        color: m.Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: m.FontWeight.bold,
+                                    const m.SizedBox(width: 16),
+                                    m.Expanded(
+                                      child: m.Column(
+                                        crossAxisAlignment:
+                                            m.CrossAxisAlignment.start,
+                                        children: [
+                                          const m.Text(
+                                            "Asleep",
+                                            style: m.TextStyle(
+                                              color: m.Colors.white70,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          const m.SizedBox(height: 4),
+                                          m.Text(
+                                            formatTime(provider.jamTidur),
+                                            style: const m.TextStyle(
+                                              color: m.Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: m.FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                    ),
+                                    m.Column(
+                                      crossAxisAlignment:
+                                          m.CrossAxisAlignment.end,
+                                      children: [
+                                        const m.Text(
+                                          "Time to Sleep",
+                                          style: m.TextStyle(
+                                            color: m.Colors.white70,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        const m.SizedBox(height: 4),
+                                        m.Text(
+                                          formatDuration(duration),
+                                          style: const m.TextStyle(
+                                            color: m.Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: m.FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
-                              m.Column(
-                                crossAxisAlignment: m.CrossAxisAlignment.end,
-                                children: [
-                                  const m.Text(
-                                    "Time to Sleep",
-                                    style: m.TextStyle(
-                                      color: m.Colors.white70,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  const m.SizedBox(height: 4),
-                                  m.Text(
-                                    formatDuration(duration),
-                                    style: const m.TextStyle(
-                                      color: m.Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: m.FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
+
+                              const m.SizedBox(height: 100),
                             ],
                           ),
                         ),
-
-                        const m.SizedBox(height: 32)
                       ],
                     ),
-                  )
+                  ),
                 ),
               ),
             ),
@@ -424,9 +408,26 @@ class _HomeScreenState extends m.State<HomeScreen>
       },
     );
   }
+
+  m.Widget _buildLegend(String label, m.Color color) {
+    return m.Row(
+      children: [
+        m.Container(
+          width: 8,
+          height: 8,
+          decoration: m.BoxDecoration(color: color, shape: m.BoxShape.circle),
+        ),
+        const m.SizedBox(width: 8),
+        m.Text(
+          label,
+          style: const m.TextStyle(color: m.Colors.white70, fontSize: 12),
+        ),
+      ],
+    );
+  }
 }
 
-class StressInputCard extends m.StatelessWidget {
+class StressInputCard extends m.StatefulWidget {
   const StressInputCard({
     super.key,
     required this.stressLevel,
@@ -434,7 +435,28 @@ class StressInputCard extends m.StatelessWidget {
   });
 
   final int stressLevel;
-  final m.ValueChanged<int> onChanged;
+  final void Function(int) onChanged;
+
+  @override
+  State<StressInputCard> createState() => _StressInputCardState();
+}
+
+class _StressInputCardState extends m.State<StressInputCard> {
+  late double _currentLevel;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentLevel = widget.stressLevel.toDouble();
+  }
+
+  @override
+  void didUpdateWidget(covariant StressInputCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.stressLevel != oldWidget.stressLevel) {
+      _currentLevel = widget.stressLevel.toDouble();
+    }
+  }
 
   m.Widget _buildStressIcon(int level, m.Color color) {
     m.IconData iconData;
@@ -485,21 +507,27 @@ class StressInputCard extends m.StatelessWidget {
           m.Row(
             mainAxisAlignment: m.MainAxisAlignment.spaceBetween,
             children: [
-              _buildStressIcon(stressLevel, stressColors[stressLevel - 1]),
+              _buildStressIcon(
+                _currentLevel.toInt(),
+                stressColors[_currentLevel.toInt() - 1],
+              ),
               m.Expanded(
                 child: m.Slider(
-                  value: stressLevel.toDouble(),
+                  value: _currentLevel,
                   min: 1,
                   max: 5,
                   divisions: 4,
-                  activeColor: stressColors[stressLevel - 1],
+                  activeColor: stressColors[_currentLevel.toInt() - 1],
                   inactiveColor: m.Colors.white.withOpacity(0.2),
-                  label: stressLevel.toString(),
-                  onChanged: (value) => onChanged(value.round()),
+                  label: _currentLevel.toInt().toString(),
+                  onChanged: (value) {
+                    setState(() => _currentLevel = value);
+                    widget.onChanged(_currentLevel.toInt());
+                  },
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
