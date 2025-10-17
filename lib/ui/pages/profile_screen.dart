@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            'Keluar Akun',
+            'Keluar Akun!',
             style: GoogleFonts.poppins(
               color: Colors.black,
               fontWeight: FontWeight.bold,
