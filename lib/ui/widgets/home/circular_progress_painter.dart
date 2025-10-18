@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' as m;
 import 'dart:math' as math;
 
 class CircularProgressPainter extends m.CustomPainter {
-  final double progress;
+  final double progress; // Expects 0-100 (percentage)
   final double strokeWidth;
 
   CircularProgressPainter({required this.progress, this.strokeWidth = 12});
@@ -21,32 +21,39 @@ class CircularProgressPainter extends m.CustomPainter {
 
     canvas.drawCircle(center, radius, bgPaint);
 
-    // Gradient progress
-    final rect = m.Rect.fromCircle(center: center, radius: radius);
-    final gradient = m.SweepGradient(
-      startAngle: -math.pi / 2,
-      endAngle: 2 * math.pi - math.pi / 2,
-      colors: [
-        const m.Color(0xFF8B5CF6),
-        const m.Color(0xFF06B6D4),
-        const m.Color(0xFF8B5CF6),
-      ],
-      stops: const [0.0, 0.5, 1.0],
-    );
+    // Convert percentage (0-100) to fraction (0-1)
+    final normalizedProgress = (progress / 100.0).clamp(0.0, 1.0);
 
-    final progressPaint = m.Paint()
-      ..shader = gradient.createShader(rect)
-      ..strokeWidth = strokeWidth
-      ..style = m.PaintingStyle.stroke
-      ..strokeCap = m.StrokeCap.round;
+    // Only draw progress arc if there's actual progress
+    if (normalizedProgress > 0) {
+      // Gradient progress
+      final rect = m.Rect.fromCircle(center: center, radius: radius);
+      final gradient = m.SweepGradient(
+        startAngle: -math.pi / 2,
+        endAngle: 2 * math.pi - math.pi / 2,
+        colors: [
+          const m.Color(0xFF8B5CF6), // Purple
+          const m.Color(0xFF06B6D4), // Cyan
+          const m.Color(0xFF8B5CF6), // Purple
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      );
 
-    canvas.drawArc(
-      rect,
-      -math.pi / 2,
-      2 * math.pi * progress,
-      false,
-      progressPaint,
-    );
+      final progressPaint = m.Paint()
+        ..shader = gradient.createShader(rect)
+        ..strokeWidth = strokeWidth
+        ..style = m.PaintingStyle.stroke
+        ..strokeCap = m.StrokeCap.round;
+
+      // Draw arc based on normalized progress (0-1)
+      canvas.drawArc(
+        rect,
+        -math.pi / 2, // Start at top
+        2 * math.pi * normalizedProgress, // Sweep angle based on progress
+        false,
+        progressPaint,
+      );
+    }
   }
 
   @override

@@ -51,23 +51,33 @@ class _ScoreScreenState extends State<ScoreScreen>
       m.CurvedAnimation(parent: _contentController, curve: m.Curves.easeIn),
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SleepProvider>().loadData().then((_) {
-        _updateProgress();
-        _contentController.forward();
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final provider = context.read<SleepProvider>();
+
+      // Load data first
+      await provider.loadData();
+
+      await _updateProgress(provider);
+
+      // Start content animation
+      _contentController.forward();
     });
   }
 
-  void _updateProgress() {
-    final provider = context.read<SleepProvider>();
-    final quality = provider.calculateQuality();
-    _progressAnimation = m.Tween<double>(begin: 0, end: quality).animate(
-      m.CurvedAnimation(
-        parent: _progressController,
-        curve: m.Curves.easeInOutCubic,
-      ),
-    );
+  Future<void> _updateProgress(SleepProvider provider) async {
+    if (!mounted) return;
+
+    final qualityPercent = await provider.calculateQuality();
+
+    setState(() {
+      _progressAnimation = Tween<double>(
+        begin: 0,
+        end: qualityPercent,
+      ).animate(
+        CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
+      );
+    });
+
     _progressController.forward(from: 0);
   }
 
@@ -310,11 +320,16 @@ class _ScoreScreenState extends State<ScoreScreen>
         ),
         const m.SizedBox(width: 16),
         Expanded(
-          child: _buildStatCard(
-            icon: m.Icons.hotel,
-            label: 'Kualitas',
-            value: '${(provider.calculateQuality() * 100).toInt()}',
-            color: const m.Color(0xFF8B5CF6),
+          child: m.AnimatedBuilder(
+            animation: _progressAnimation,
+            builder: (context, child) {
+              return _buildStatCard(
+                icon: m.Icons.hotel,
+                label: 'Kualitas',
+                value: "${_progressAnimation.value.toStringAsFixed(0)}%",
+                color: const m.Color(0xFF8B5CF6),
+              );
+            },
           ),
         ),
       ],

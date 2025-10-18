@@ -1,10 +1,10 @@
 import 'package:capstone/ui/widgets/home/circular_progress_painter.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter/material.dart' as m;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ScoreCircularProgress extends StatefulWidget {
   const ScoreCircularProgress({super.key, required this.progressAnimation});
-  final Animation<double> progressAnimation;
+  final m.Animation<double> progressAnimation;
 
   @override
   State<ScoreCircularProgress> createState() => _ScoreCircularProgressState();
@@ -50,7 +50,7 @@ class _ScoreCircularProgressState extends State<ScoreCircularProgress> {
                     ),
                     const m.SizedBox(height: 12),
                     m.Text(
-                      "${(widget.progressAnimation.value * 100).toInt()}",
+                      "${widget.progressAnimation.value.toStringAsFixed(0)}",
                       style: const m.TextStyle(
                         color: m.Colors.white,
                         fontSize: 72,
