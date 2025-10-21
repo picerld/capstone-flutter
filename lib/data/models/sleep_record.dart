@@ -1,10 +1,10 @@
 class SleepRecord {
   final String id;
   final String sleepTime; // Format: "HH:mm"
-  final String wakeTime;  // Format: "HH:mm"
+  final String wakeTime; // Format: "HH:mm"
   final int durationMinutes;
-  final double quality;   // 0-10 scale
-  final int stressLevel;  // 1-5
+  final double quality; // 0-10 scale
+  final int stressLevel; // 1-5
   final int qualitySleep; // 1-5
   final DateTime date;
   final double? prediction; // 0-10 scale

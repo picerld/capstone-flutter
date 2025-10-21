@@ -4,14 +4,15 @@ import 'package:flutter/foundation.dart' show debugPrint;
 
 class SleepApiService {
   static final SleepApiService instance = SleepApiService._init();
-  static const String _baseUrl = 'https://model-to-api-production.up.railway.app';
+  static const String _baseUrl =
+      'https://model-to-api-production.up.railway.app';
 
   SleepApiService._init();
 
   Future<double> calculateSleepScore({
     required int durationMinutes,
     required int qualitySleep, // 1-10 scale
-    required int stressLevel,  // 1-10 scale
+    required int stressLevel, // 1-10 scale
   }) async {
     try {
       final url = Uri.parse('$_baseUrl/predict');
@@ -19,25 +20,28 @@ class SleepApiService {
       final durationHours = durationMinutes / 60.0;
 
       debugPrint('🌐 Calling API: $url');
-      debugPrint('📊 Payload: duration=$durationHours jam, quality=$qualitySleep/10, stress=$stressLevel/10');
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode({
-          'sleep_duration': durationHours,
-          'sleep_quality': qualitySleep,
-          'stress_level': stressLevel,
-        }),
-      ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () => throw Exception('API request timeout'),
+      debugPrint(
+        '📊 Payload: duration=$durationHours jam, quality=$qualitySleep, stress=$stressLevel',
       );
 
-      debugPrint('API Response Status: ${response.statusCode}');
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: json.encode({
+              'sleep_duration': durationHours,
+              'sleep_quality': qualitySleep,
+              'stress_level': stressLevel,
+            }),
+          )
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw Exception('API request timeout'),
+          );
+
       debugPrint('API Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
@@ -46,16 +50,20 @@ class SleepApiService {
         if (data['prediction'] != null) {
           double apiScore = (data['prediction'] as num).toDouble();
 
-          double percentageScore = (apiScore / 10.0 * 100).clamp(0, 100);
+          double percentageScore = (apiScore / 5.8 * 100).clamp(0, 100);
 
-          debugPrint('🎯 API Score: $apiScore/10 → ${percentageScore.toStringAsFixed(1)}%');
+          debugPrint(
+            '🎯 API Score: $apiScore/100 → ${percentageScore.toStringAsFixed(1)}%',
+          );
 
           return percentageScore;
         } else {
           throw Exception('Prediction field not found in response: $data');
         }
       } else {
-        throw Exception('API returned status ${response.statusCode}: ${response.body}');
+        throw Exception(
+          'API returned status ${response.statusCode}: ${response.body}',
+        );
       }
     } catch (e) {
       debugPrint('API Error: $e');
@@ -71,8 +79,8 @@ class SleepApiService {
 
   double calculateLocalScore({
     required int durationMinutes,
-    required int stressLevel,   // 1-10
-    required int qualitySleep,  // 1-10
+    required int stressLevel, // 1-10
+    required int qualitySleep, // 1-10
   }) {
     final hours = durationMinutes / 60.0;
 
@@ -95,15 +103,26 @@ class SleepApiService {
 
     final qualityBonus = (qualitySleep - 5.5) * 0.3;
 
-    final finalScore = (baseQuality - stressPenalty + qualityBonus).clamp(0, 10);
+    final finalScore = (baseQuality - stressPenalty + qualityBonus).clamp(
+      0,
+      10,
+    );
 
     final percentageScore = (finalScore * 10).clamp(0.0, 100.0);
 
     debugPrint('Local Calculation (1-10 scale):');
-    debugPrint('Duration: ${hours.toStringAsFixed(1)}h → Base: ${baseQuality.toStringAsFixed(1)}');
-    debugPrint('Stress ($stressLevel/10): -${stressPenalty.toStringAsFixed(2)}');
-    debugPrint('Quality ($qualitySleep/10): ${qualityBonus >= 0 ? '+' : ''}${qualityBonus.toStringAsFixed(2)}');
-    debugPrint('Final: ${finalScore.toStringAsFixed(1)}/10 → ${percentageScore.toStringAsFixed(1)}%');
+    debugPrint(
+      'Duration: ${hours.toStringAsFixed(1)}h → Base: ${baseQuality.toStringAsFixed(1)}',
+    );
+    debugPrint(
+      'Stress ($stressLevel/10): -${stressPenalty.toStringAsFixed(2)}',
+    );
+    debugPrint(
+      'Quality ($qualitySleep/10): ${qualityBonus >= 0 ? '+' : ''}${qualityBonus.toStringAsFixed(2)}',
+    );
+    debugPrint(
+      'Final: ${finalScore.toStringAsFixed(1)}/10 → ${percentageScore.toStringAsFixed(1)}%',
+    );
 
     return percentageScore.toDouble();
   }
@@ -111,9 +130,9 @@ class SleepApiService {
   Future<bool> testConnection() async {
     try {
       debugPrint('🔍 Testing API connection...');
-      final response = await http.get(
-          Uri.parse('$_baseUrl/health')
-      ).timeout(const Duration(seconds: 5));
+      final response = await http
+          .get(Uri.parse('$_baseUrl/health'))
+          .timeout(const Duration(seconds: 5));
 
       final isHealthy = response.statusCode == 200;
 

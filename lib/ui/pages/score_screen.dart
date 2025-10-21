@@ -70,10 +70,7 @@ class _ScoreScreenState extends State<ScoreScreen>
     final qualityPercent = await provider.calculateQuality();
 
     setState(() {
-      _progressAnimation = Tween<double>(
-        begin: 0,
-        end: qualityPercent,
-      ).animate(
+      _progressAnimation = Tween<double>(begin: 0, end: qualityPercent).animate(
         CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
       );
     });
@@ -192,9 +189,8 @@ class _ScoreScreenState extends State<ScoreScreen>
                         ),
                         const m.SizedBox(height: 30),
 
-                        _buildLegendRow(),
-                        const m.SizedBox(height: 40),
-
+                        // _buildLegendRow(),
+                        // const m.SizedBox(height: 40),
                         const QualityLabel(),
                         const m.SizedBox(height: 40),
 
@@ -326,7 +322,7 @@ class _ScoreScreenState extends State<ScoreScreen>
               return _buildStatCard(
                 icon: m.Icons.hotel,
                 label: 'Kualitas',
-                value: "${_progressAnimation.value.toStringAsFixed(0)}%",
+                value: "${_progressAnimation.value.toStringAsFixed(0)}",
                 color: const m.Color(0xFF8B5CF6),
               );
             },

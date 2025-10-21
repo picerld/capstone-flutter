@@ -30,10 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _slideAnimation = Tween<double>(begin: 50, end: 0).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: Curves.easeOutCubic,
-      ),
+      CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic),
     );
 
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
@@ -57,8 +54,8 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    final Widget nextPage = (userProvider.userName != null &&
-        userProvider.userName!.isNotEmpty)
+    final Widget nextPage =
+        (userProvider.userName != null && userProvider.userName!.isNotEmpty)
         ? const OnBoardingScreen()
         : const NameEntryScreen();
 
@@ -68,12 +65,16 @@ class _SplashScreenState extends State<SplashScreen>
         transitionDuration: const Duration(milliseconds: 800),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           // Smooth curve
-          final curvedAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic);
+          final curvedAnimation = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeInOutCubic,
+          );
 
           // Fade effect
-          final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0)
-              .animate(curvedAnimation);
+          final fadeAnimation = Tween<double>(
+            begin: 0.0,
+            end: 1.0,
+          ).animate(curvedAnimation);
 
           // Slide from bottom
           final slideAnimation = Tween<Offset>(
@@ -82,17 +83,16 @@ class _SplashScreenState extends State<SplashScreen>
           ).animate(curvedAnimation);
 
           // Optional: slight scale in
-          final scaleAnimation = Tween<double>(begin: 0.95, end: 1.0)
-              .animate(curvedAnimation);
+          final scaleAnimation = Tween<double>(
+            begin: 0.95,
+            end: 1.0,
+          ).animate(curvedAnimation);
 
           return FadeTransition(
             opacity: fadeAnimation,
             child: SlideTransition(
               position: slideAnimation,
-              child: ScaleTransition(
-                scale: scaleAnimation,
-                child: child,
-              ),
+              child: ScaleTransition(scale: scaleAnimation, child: child),
             ),
           );
         },
@@ -116,10 +116,7 @@ class _SplashScreenState extends State<SplashScreen>
           builder: (context, child) {
             return Transform.translate(
               offset: Offset(0, _slideAnimation.value),
-              child: Opacity(
-                opacity: _fadeAnimation.value,
-                child: child,
-              ),
+              child: Opacity(opacity: _fadeAnimation.value, child: child),
             );
           },
           child: Column(

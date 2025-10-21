@@ -89,7 +89,8 @@ class SleepProvider extends ChangeNotifier {
 
   Duration? calculateDuration() {
     if (_jamTidur == null || _jamBangun == null) return null;
-    final minutes = (_jamBangun!.hour * 60 + _jamBangun!.minute) -
+    final minutes =
+        (_jamBangun!.hour * 60 + _jamBangun!.minute) -
         (_jamTidur!.hour * 60 + _jamTidur!.minute);
     return Duration(minutes: minutes >= 0 ? minutes : minutes + 24 * 60);
   }
@@ -117,14 +118,18 @@ class SleepProvider extends ChangeNotifier {
       final duration = calculateDuration();
       if (duration == null) return null;
 
-      final sleepStr = '${_jamTidur!.hour.toString().padLeft(2, '0')}:${_jamTidur!.minute.toString().padLeft(2, '0')}';
-      final wakeStr = '${_jamBangun!.hour.toString().padLeft(2, '0')}:${_jamBangun!.minute.toString().padLeft(2, '0')}';
+      final sleepStr =
+          '${_jamTidur!.hour.toString().padLeft(2, '0')}:${_jamTidur!.minute.toString().padLeft(2, '0')}';
+      final wakeStr =
+          '${_jamBangun!.hour.toString().padLeft(2, '0')}:${_jamBangun!.minute.toString().padLeft(2, '0')}';
 
       // Calculate score from API
       final apiScore = await calculateQuality();
 
       final newRecord = SleepRecord(
-        id: _todayRecord?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            _todayRecord?.id ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         sleepTime: sleepStr,
         wakeTime: wakeStr,
         durationMinutes: duration.inMinutes,

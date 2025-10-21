@@ -24,17 +24,19 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-            const OnBoardingScreen(),
+                const OnBoardingScreen(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              const curve = Curves.easeInOut;
-              final tween = Tween(begin: 0.0, end: 1.0)
-                  .chain(CurveTween(curve: curve));
-              return FadeTransition(
-                opacity: animation.drive(tween),
-                child: child,
-              );
-            },
+                  const curve = Curves.easeInOut;
+                  final tween = Tween(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).chain(CurveTween(curve: curve));
+                  return FadeTransition(
+                    opacity: animation.drive(tween),
+                    child: child,
+                  );
+                },
           ),
         );
       });
@@ -76,12 +78,15 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
                 TextFormField(
                   controller: _nameController,
                   style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Masukkan nama...',
                     hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white.withOpacity(0.5),
+                      fontWeight: FontWeight.bold,
+                    ),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.1),
                     border: OutlineInputBorder(

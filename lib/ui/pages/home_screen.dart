@@ -69,10 +69,7 @@ class _HomeScreenState extends State<HomeScreen>
     final qualityPercent = await provider.calculateQuality();
 
     setState(() {
-      _progressAnimation = Tween<double>(
-        begin: 0,
-        end: qualityPercent,
-      ).animate(
+      _progressAnimation = Tween<double>(begin: 0, end: qualityPercent).animate(
         CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
       );
     });
@@ -119,7 +116,10 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  Future<void> showSubmitDialog(BuildContext context, SleepProvider provider) async {
+  Future<void> showSubmitDialog(
+    BuildContext context,
+    SleepProvider provider,
+  ) async {
     final result = await m.showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -127,12 +127,10 @@ class _HomeScreenState extends State<HomeScreen>
         backgroundColor: const m.Color(0xFF1A0B2E),
         shape: m.RoundedRectangleBorder(
           borderRadius: m.BorderRadius.circular(20),
-          side: m.BorderSide(
-            color: m.Colors.white.withOpacity(0.1),
-          ),
+          side: m.BorderSide(color: m.Colors.white.withOpacity(0.1)),
         ),
         title: const m.Text(
-          'Simpan Data Tidur',
+          'Kalkulasi!',
           style: m.TextStyle(color: m.Colors.white),
         ),
         content: const m.Text(
@@ -170,9 +168,7 @@ class _HomeScreenState extends State<HomeScreen>
         context: context,
         barrierDismissible: false,
         builder: (context) => const m.Center(
-          child: m.CircularProgressIndicator(
-            color: m.Color(0xFF8B5CF6),
-          ),
+          child: m.CircularProgressIndicator(color: m.Color(0xFF8B5CF6)),
         ),
       );
 
@@ -186,12 +182,13 @@ class _HomeScreenState extends State<HomeScreen>
         if (scoreResult != null) {
           // Success - update progress with the returned score
           setState(() {
-            _progressAnimation = Tween<double>(
-              begin: 0,
-              end: scoreResult,
-            ).animate(
-              CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
-            );
+            _progressAnimation = Tween<double>(begin: 0, end: scoreResult)
+                .animate(
+                  CurvedAnimation(
+                    parent: _progressController,
+                    curve: Curves.easeInOut,
+                  ),
+                );
           });
           _progressController.forward(from: 0);
 
@@ -373,14 +370,15 @@ class _HomeScreenState extends State<HomeScreen>
                         m.SizedBox(
                           width: double.infinity,
                           child: m.ElevatedButton(
-                            onPressed: provider.jamTidur == null ||
-                                provider.jamBangun == null
+                            onPressed:
+                                provider.jamTidur == null ||
+                                    provider.jamBangun == null
                                 ? null
                                 : () => showSubmitDialog(context, provider),
                             style: m.ElevatedButton.styleFrom(
                               backgroundColor: const m.Color(0xFF8B5CF6),
-                              disabledBackgroundColor:
-                              m.Colors.grey.withOpacity(0.3),
+                              disabledBackgroundColor: m.Colors.grey
+                                  .withOpacity(0.3),
                               padding: const m.EdgeInsets.symmetric(
                                 vertical: 16,
                               ),
@@ -391,24 +389,24 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             child: provider.isSaving
                                 ? const m.SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: m.CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                m.AlwaysStoppedAnimation<m.Color>(
-                                  m.Colors.white,
-                                ),
-                              ),
-                            )
+                                    height: 20,
+                                    width: 20,
+                                    child: m.CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor:
+                                          m.AlwaysStoppedAnimation<m.Color>(
+                                            m.Colors.white,
+                                          ),
+                                    ),
+                                  )
                                 : const m.Text(
-                              'Simpan Data Tidur',
-                              style: m.TextStyle(
-                                color: m.Colors.white,
-                                fontSize: 16,
-                                fontWeight: m.FontWeight.bold,
-                              ),
-                            ),
+                                    'Hitung Skor',
+                                    style: m.TextStyle(
+                                      color: m.Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: m.FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
 
@@ -431,18 +429,18 @@ class _HomeScreenState extends State<HomeScreen>
                                     child: m.Center(
                                       child: m.Column(
                                         mainAxisAlignment:
-                                        m.MainAxisAlignment.center,
+                                            m.MainAxisAlignment.center,
                                         children: [
                                           const m.Text(
-                                            "Skor Tidur",
+                                            "Skor Produktivitas",
                                             style: m.TextStyle(
                                               color: m.Colors.white70,
-                                              fontSize: 14,
+                                              fontSize: 13,
                                             ),
                                           ),
                                           const m.SizedBox(height: 8),
                                           m.Text(
-                                            "${_progressAnimation.value.toStringAsFixed(0)}%",
+                                            "${_progressAnimation.value.toStringAsFixed(0)}",
                                             style: const m.TextStyle(
                                               color: m.Colors.white,
                                               fontSize: 48,
@@ -455,22 +453,22 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                 ),
                               ),
-                              const m.SizedBox(height: 24),
-                              m.Row(
-                                mainAxisAlignment: m.MainAxisAlignment.center,
-                                children: [
-                                  _buildLegend(
-                                    "Deep Sleep",
-                                    const m.Color(0xFF8B5CF6),
-                                  ),
-                                  const m.SizedBox(width: 32),
-                                  _buildLegend(
-                                    "Light Sleep",
-                                    const m.Color(0xFF06B6D4),
-                                  ),
-                                ],
-                              ),
 
+                              // const m.SizedBox(height: 24),
+                              // m.Row(
+                              //   mainAxisAlignment: m.MainAxisAlignment.center,
+                              //   children: [
+                              //     _buildLegend(
+                              //       "Deep Sleep",
+                              //       const m.Color(0xFF8B5CF6),
+                              //     ),
+                              //     const m.SizedBox(width: 32),
+                              //     _buildLegend(
+                              //       "Light Sleep",
+                              //       const m.Color(0xFF06B6D4),
+                              //     ),
+                              //   ],
+                              // ),
                               const m.SizedBox(height: 45),
 
                               // Sleep Summary Card
@@ -496,8 +494,9 @@ class _HomeScreenState extends State<HomeScreen>
                                             m.Color(0xFF6366F1),
                                           ],
                                         ),
-                                        borderRadius:
-                                        m.BorderRadius.circular(12),
+                                        borderRadius: m.BorderRadius.circular(
+                                          12,
+                                        ),
                                       ),
                                       child: const m.Icon(
                                         m.Icons.alarm,
@@ -509,7 +508,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     m.Expanded(
                                       child: m.Column(
                                         crossAxisAlignment:
-                                        m.CrossAxisAlignment.start,
+                                            m.CrossAxisAlignment.start,
                                         children: [
                                           const m.Text(
                                             "Asleep",
@@ -532,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                     m.Column(
                                       crossAxisAlignment:
-                                      m.CrossAxisAlignment.end,
+                                          m.CrossAxisAlignment.end,
                                       children: [
                                         const m.Text(
                                           "Time to Sleep",
@@ -556,6 +555,10 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               ),
 
+                              const m.SizedBox(height: 20),
+
+                              _buildRecommendations(provider),
+
                               const m.SizedBox(height: 100),
                             ],
                           ),
@@ -569,6 +572,84 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         );
       },
+    );
+  }
+
+  m.Widget _buildRecommendations(SleepProvider sleep) {
+    final score = sleep.todayRecord?.prediction ?? 0;
+    print("Skor Kamu: ${score}");
+    String categoryText;
+    String titleText;
+
+    if (score <= 51) {
+      titleText = "Produktivitas Rendah";
+      categoryText =
+          'Tidur pendek, kualitas tidur rendah, atau tingkat stres tinggi. Perlu memperbaiki pola tidur dan mengurangi stres';
+    } else if (score <= 68) {
+      titleText = "Perlu Ditingkatkan";
+      categoryText =
+          'Kondisi sudah sedang, tapi masih bisa ditingkatkan dengan tidur yang lebih lama atau kualitas yang lebih baik!';
+    } else if (score <= 86) {
+      titleText = "Cukup Baik";
+      categoryText =
+          'Produktivitas sudah baik, tetapi masih dapat ditingkatkan dengan menjaga rutinitas yang konsisten!';
+    } else {
+      titleText = "Optimal";
+      categoryText =
+          'Kombinasi tidur cukup, kualitas tinggi, dan stres rendah -- pertahankan gaya hidup ini!';
+    }
+
+    return m.Container(
+      padding: const m.EdgeInsets.all(20),
+      decoration: m.BoxDecoration(
+        gradient: m.LinearGradient(
+          colors: [
+            const m.Color(0xFF8B5CF6).withOpacity(0.2),
+            const m.Color(0xFF06B6D4).withOpacity(0.1),
+          ],
+        ),
+        borderRadius: m.BorderRadius.circular(16),
+        border: m.Border.all(color: const m.Color(0xFF8B5CF6).withOpacity(0.3)),
+      ),
+      child: m.Column(
+        crossAxisAlignment: m.CrossAxisAlignment.start,
+        children: [
+          m.Row(
+            children: [
+              m.Container(
+                padding: const m.EdgeInsets.all(10),
+                decoration: m.BoxDecoration(
+                  color: const m.Color(0xFF8B5CF6).withOpacity(0.3),
+                  borderRadius: m.BorderRadius.circular(10),
+                ),
+                child: const m.Icon(
+                  m.Icons.lightbulb_outline,
+                  color: m.Color(0xFFFBBF24),
+                  size: 20,
+                ),
+              ),
+              const m.SizedBox(width: 12),
+              m.Text(
+                titleText,
+                style: m.TextStyle(
+                  color: m.Colors.white,
+                  fontSize: 18,
+                  fontWeight: m.FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const m.SizedBox(height: 16),
+          m.Text(
+            categoryText,
+            style: m.TextStyle(
+              color: m.Colors.white.withOpacity(0.9),
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -85,19 +85,21 @@ class _ProfileScreenState extends State<ProfileScreen>
                 Navigator.of(context).pushAndRemoveUntil(
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                    const SplashScreen(),
+                        const SplashScreen(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
-                      const curve = Curves.easeInOut;
-                      final tween = Tween(begin: 0.0, end: 1.0)
-                          .chain(CurveTween(curve: curve));
-                      return FadeTransition(
-                        opacity: animation.drive(tween),
-                        child: child,
-                      );
-                    },
+                          const curve = Curves.easeInOut;
+                          final tween = Tween(
+                            begin: 0.0,
+                            end: 1.0,
+                          ).chain(CurveTween(curve: curve));
+                          return FadeTransition(
+                            opacity: animation.drive(tween),
+                            child: child,
+                          );
+                        },
                   ),
-                      (route) => false,
+                  (route) => false,
                 );
               },
               child: Text(
@@ -363,4 +365,3 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 }
-

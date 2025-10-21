@@ -40,10 +40,10 @@ class _ScoreCircularProgressState extends State<ScoreCircularProgress> {
                   mainAxisAlignment: m.MainAxisAlignment.center,
                   children: [
                     const m.Text(
-                      "Skor Tidur",
+                      "Skor Produktivitas",
                       style: m.TextStyle(
                         color: m.Colors.white70,
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: m.FontWeight.w500,
                         letterSpacing: 1,
                       ),

@@ -127,31 +127,51 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                           // Smooth transition to HomeScreen
                           Navigator.of(context).pushReplacement(
                             PageRouteBuilder(
-                              pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
-                              transitionDuration: const Duration(milliseconds: 700),
-                              reverseTransitionDuration: const Duration(milliseconds: 700),
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                final curvedAnimation = CurvedAnimation(
-                                  parent: animation,
-                                  curve: Curves.easeInOutCubic,
-                                );
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const HomeScreen(),
+                              transitionDuration: const Duration(
+                                milliseconds: 700,
+                              ),
+                              reverseTransitionDuration: const Duration(
+                                milliseconds: 700,
+                              ),
+                              transitionsBuilder:
+                                  (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    final curvedAnimation = CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeInOutCubic,
+                                    );
 
-                                final fade = Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation);
-                                final slide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
-                                    .animate(curvedAnimation);
-                                final scale = Tween<double>(begin: 0.95, end: 1.0).animate(curvedAnimation);
+                                    final fade = Tween<double>(
+                                      begin: 0.0,
+                                      end: 1.0,
+                                    ).animate(curvedAnimation);
+                                    final slide = Tween<Offset>(
+                                      begin: const Offset(0, 0.2),
+                                      end: Offset.zero,
+                                    ).animate(curvedAnimation);
+                                    final scale = Tween<double>(
+                                      begin: 0.95,
+                                      end: 1.0,
+                                    ).animate(curvedAnimation);
 
-                                return FadeTransition(
-                                  opacity: fade,
-                                  child: SlideTransition(
-                                    position: slide,
-                                    child: ScaleTransition(
-                                      scale: scale,
-                                      child: child,
-                                    ),
-                                  ),
-                                );
-                              },
+                                    return FadeTransition(
+                                      opacity: fade,
+                                      child: SlideTransition(
+                                        position: slide,
+                                        child: ScaleTransition(
+                                          scale: scale,
+                                          child: child,
+                                        ),
+                                      ),
+                                    );
+                                  },
                             ),
                           );
                         } else {
@@ -169,7 +189,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
                         ),
                       ),
                       child: Text(
-                        _currentPage == _onboardingPages.length - 1 ? "Mulai" : "Lanjut",
+                        _currentPage == _onboardingPages.length - 1
+                            ? "Mulai"
+                            : "Lanjut",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,

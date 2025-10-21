@@ -121,7 +121,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   }
 
   Color _colorFromQuality(double quality) {
-    final pct = (quality * 100).round();
+    final pct = (quality).round();
     if (pct <= 0) return m.Colors.white.withValues(alpha: 0.06);
     if (pct < 40) return const m.Color(0xFFEF4444);
     if (pct < 70) return const m.Color(0xFFF59E0B);
@@ -143,7 +143,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             Text('Jam Tidur: ${record.sleepTime}'),
             Text('Jam Bangun: ${record.wakeTime}'),
             Text('Durasi: ${record.durationMinutes} menit'),
-            Text('Quality: ${(record.quality).toStringAsFixed(0)}%'),
+            Text('Quality: ${(record.quality).toStringAsFixed(0)}'),
           ],
         ),
         actions: [
@@ -302,7 +302,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                         const m.SizedBox(height: 20),
                         _buildLatestAnalysis(provider),
                         const m.SizedBox(height: 20),
-                        _buildRecommendations(provider),
+                        // _buildRecommendations(provider),
                         const m.SizedBox(height: 100),
                         // _buildMonthlyTrends(provider),
                         // const m.SizedBox(height: 20),
@@ -377,7 +377,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 style: m.TextStyle(color: m.Colors.white70),
               ),
               m.Text(
-                '${(avgQuality).toStringAsFixed(0)}%',
+                '${(avgQuality).toStringAsFixed(0)}',
                 style: const m.TextStyle(color: m.Colors.white),
               ),
             ],
@@ -640,11 +640,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               fontSize: 18,
               fontWeight: m.FontWeight.bold,
             ),
-          ),
-          const m.SizedBox(height: 16),
-          _buildAnalysisItem(
-            '• Tidur Nyenyak 30 Menit Lebih Lama dapat Meningkatkan Fokusmu hingga 15%.',
-            m.Colors.green.shade400,
           ),
           const m.SizedBox(height: 12),
           _buildAnalysisItem(
