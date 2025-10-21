@@ -643,13 +643,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           ),
           const m.SizedBox(height: 12),
           _buildAnalysisItem(
-            '• Rata-rata tidur minggu ini: ${(avgThisWeek).toStringAsFixed(0)}%.',
+            '• Rata-rata tidur minggu ini: ${(avgThisWeek).toStringAsFixed(0)}.',
             const m.Color(0xFF06B6D4),
           ),
           if (latestRecord != null) ...[
             const m.SizedBox(height: 12),
             _buildAnalysisItem(
-              '• Terakhir: ${latestRecord.sleepTime} - ${latestRecord.wakeTime} (${(latestRecord.quality).toStringAsFixed(0)}%).',
+              '• Terakhir: ${latestRecord.sleepTime} - ${latestRecord.wakeTime} (${(latestRecord.quality).toStringAsFixed(0)}).',
               m.Colors.orange.shade300,
             ),
           ],
