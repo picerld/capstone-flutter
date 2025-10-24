@@ -530,31 +530,31 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             mainAxisAlignment: m.MainAxisAlignment.spaceAround,
             children: const [
               m.Text(
-                'M',
+                'Min',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
               m.Text(
-                'M',
+                'Sen',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
               m.Text(
-                'M',
+                'Sel',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
               m.Text(
-                'W',
+                'Rab',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
               m.Text(
-                'F',
+                'Kam',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
               m.Text(
-                'S',
+                'Jum',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
               m.Text(
-                'S',
+                'Sab',
                 style: m.TextStyle(color: m.Colors.white60, fontSize: 12),
               ),
             ],
